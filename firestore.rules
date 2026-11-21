@@ -1,0 +1,25 @@
+rules_version = '2';
+
+// Split Orbit — only the Google accounts listed here can read or write.
+//
+// TO ADD YOUR PARTNER LATER:
+//   1. Replace the PARTNER line below with their real Gmail (lowercase).
+//   2. Run:  firebase deploy --only firestore:rules
+//
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isCrew() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in [
+          "owner@example.com",
+          "mahtabalamapps@gmail.com"
+        ];
+    }
+
+    match /{document=**} {
+      allow read, write: if isCrew();
+    }
+  }
+}
